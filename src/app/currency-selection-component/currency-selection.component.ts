@@ -48,9 +48,6 @@ export class CurrencySelectionComponent implements OnInit, ControlValueAccessor,
 
   @HostListener('document:click', ['$event']) onDocumentClick() {
     this.showCurrencies = false;
-    // if (this.selectedCurrency === '') {
-    //   this.selectedCurrency = 'EUR';
-    // }
   }
 
   constructor(private currencyService: CurrencyService) {

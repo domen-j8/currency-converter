@@ -1,7 +1,7 @@
 import {Component, NgModule, OnInit} from '@angular/core';
 import {FormBuilder} from "@angular/forms";
 import {CurrencyService} from "./currency-service/currency.service";
-import {merge, Observable, pairwise} from "rxjs";
+import {merge, Observable, pairwise, startWith} from "rxjs";
 import * as Highcharts from 'highcharts';
 
 @Component({
@@ -65,16 +65,16 @@ export class AppComponent implements OnInit {
       this.currencyConvertForm.get('counterCurrency')?.value);
 
     this.currencyConvertForm.valueChanges.pipe(
+      startWith(null),
       pairwise()
     ).subscribe(([prev, next]: [any, any]) => {
-      this.convertedCurrency$ = this.currencyService.currencyConvert(next.amount, next.baseCurrency, next.counterCurrency);
-
-      if (prev.baseCurrency != next.counterCurrency || prev.baseCurrency != prev.counterCurrency) {
+      this.convertedCurrency$ = this.currencyService.currencyConvert(
+        next.amount, next.baseCurrency, next.counterCurrency);
+      if (prev === null || prev.baseCurrency != next.baseCurrency || prev.counterCurrency != next.counterCurrency) {
         this.drawGraphLine(this.currencyConvertForm.get('baseCurrency')?.value,
           this.currencyConvertForm.get('counterCurrency')?.value);
       }
     })
-
   }
 
   switchCurrencies() {
