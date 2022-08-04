@@ -1,7 +1,7 @@
 import {Component, NgModule, OnInit} from '@angular/core';
 import {FormBuilder} from "@angular/forms";
 import {CurrencyService} from "./currency-service/currency.service";
-import {Observable} from "rxjs";
+import {merge, Observable, pairwise} from "rxjs";
 import * as Highcharts from 'highcharts';
 
 @Component({
@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
   updateFlag: boolean = false;
   chartOptions: Highcharts.Options = {
     series: [{
-      data: [1, 2, 3],
+      data: [],
       type: 'line'
     }],
     title: {
@@ -31,13 +31,19 @@ export class AppComponent implements OnInit {
       }
     },
     xAxis: {
-      type: 'datetime'
+      gridLineWidth: 1,
+      categories: ['1.1.2022', '1.2.2022', '1.3.2022', '1.4.2022']
     },
     tooltip: {
       enabled: false
+    },
+    legend: {
+      enabled: false
+    },
+    credits: {
+      enabled: false
     }
   };
-
 
   currencyConvertForm = this.fb.group({
     amount: [1],
@@ -55,30 +61,19 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.currencyConvertForm.valueChanges.subscribe(val => {
-      this.convertedCurrency$ = this.currencyService.currencyConvert(val.amount, val.baseCurrency, val.counterCurrency);
-      this.currencyService.timeSeries(val.baseCurrency, val.counterCurrency)
-        .subscribe((res) => {
-          let timeSeriesValues: any[] = []
-          Object.entries(res.rates).forEach((rate: any) => {
-            console.log('rate: ', timeSeriesValues.push(Object.values(rate[1])[0]));
-          })
-          console.log('time series: ', timeSeriesValues);
+    this.drawGraphLine(this.currencyConvertForm.get('baseCurrency')?.value,
+      this.currencyConvertForm.get('counterCurrency')?.value);
 
-          this.chartOptions.series = [
-            {
-              data: timeSeriesValues,
-              type: 'line'
-            }
-          ];
-          this.updateFlag = true;
+    this.currencyConvertForm.valueChanges.pipe(
+      pairwise()
+    ).subscribe(([prev, next]: [any, any]) => {
+      this.convertedCurrency$ = this.currencyService.currencyConvert(next.amount, next.baseCurrency, next.counterCurrency);
 
-
-        })
-
+      if (prev.baseCurrency != next.counterCurrency || prev.baseCurrency != prev.counterCurrency) {
+        this.drawGraphLine(this.currencyConvertForm.get('baseCurrency')?.value,
+          this.currencyConvertForm.get('counterCurrency')?.value);
+      }
     })
-
-
 
   }
 
@@ -91,5 +86,31 @@ export class AppComponent implements OnInit {
     })
   }
 
+  drawGraphLine(baseCurrency: any, counterCurrency: any) {
+    let today = new Date().toISOString().slice(0, 10)
+    let startDate = `${new Date().getFullYear()}-01-01`
+
+    this.currencyService.timeSeries(startDate, today, baseCurrency, counterCurrency)
+      .subscribe((res) => {
+        let timeSeriesValues: any[] = [];
+        let timeSeriesDates: any[] = [];
+        Object.entries(res.rates).forEach((rate: any) => {
+          timeSeriesValues.push(Object.values(rate[1])[0]);
+          timeSeriesDates.push(rate[0]);
+        })
+        this.chartOptions.series = [
+          {
+            data: timeSeriesValues,
+            type: 'line',
+            color: '#ff1493'
+          }
+        ];
+        this.chartOptions.xAxis = {
+          gridLineWidth: 1,
+          categories: timeSeriesDates
+        }
+        this.updateFlag = true;
+      })
+  }
 
 }
