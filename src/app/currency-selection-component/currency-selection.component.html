@@ -1,1 +1,15 @@
-<!--<p-dropdown (keydown)="onKeyDown()" [options]="currencies" [(ngModel)]="selectedCurrency" optionLabel="name" optionValue="code"></p-dropdown>-->
+<div>
+  <div style="position: absolute; height: 30px;">
+    <input class="currency-input" (click)="showDropDown($event)" (input)="onInputChange($event)"
+           [(ngModel)]="selectedCurrency"/>
+    <div [hidden]="!showCurrencies" class="currencies">
+      <ng-container *ngFor="let currency of results$ | async">
+        <div (click)="selectCurrency(currency, $event)">{{currency[1].code}}</div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+
+
+

@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {CurrencyService} from "../currency-service/currency.service";
+import {BehaviorSubject, debounceTime, map, Observable, skip, switchMap, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-currency-selection-component',
@@ -8,20 +9,47 @@ import {CurrencyService} from "../currency-service/currency.service";
 })
 export class CurrencySelectionComponent implements OnInit {
 
-  currencies: { name: string, code: string }[] = [];
-  selectedCurrency: { name: string; code: string; } | undefined;
+  term$ = new BehaviorSubject<string>('');
+  results$: Observable<any> = this.term$.pipe(
+    debounceTime(1000),
+    switchMap(term =>
+      this.currencyService.getSymbols().pipe(
+        map(currency => Object.entries(currency).filter((item: any) => item[1].code.includes(term))),
+        takeUntil(this.term$.pipe(skip(1)))
+      )
+    )
+  )
 
-  constructor(private currencyService: CurrencyService) { }
+  showCurrencies: boolean = false;
+  currencies: any;
+  selectedCurrency: string = 'EUR';
 
-  ngOnInit(): void {
-    this.currencyService.getSymbols()
-      .subscribe((r) => {
-        this.currencies = Object.entries(r).map((item: any) => ({name: item[1].code, code: item[1].code}))
-      })
+  @HostListener('document:click', ['$event']) onDocumentClick() {
+    this.showCurrencies = false;
+    if (this.selectedCurrency === '') {
+      this.selectedCurrency = 'EUR';
+    }
   }
 
-  onKeyDown() {
-    console.log('test');
+  constructor(private currencyService: CurrencyService) {
+  }
+
+  ngOnInit(): void {
+  }
+
+  showDropDown(event: any) {
+    this.showCurrencies = true;
+    event.stopPropagation()
+  }
+
+  selectCurrency(currency: any, event: any) {
+    this.selectedCurrency = currency[1].code;
+    this.showCurrencies = false;
+    this.term$.next(this.selectedCurrency)
+  }
+
+  onInputChange(event: any) {
+    this.term$.next(event.target.value)
   }
 
 }
