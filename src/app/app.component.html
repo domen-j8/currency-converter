@@ -1,33 +1,58 @@
-<form [formGroup]="currencyConvertForm">
-  Amount
-  <input formControlName="amount" style="margin-top: 10px">
-  <br>
-  From
-  <app-currency-selection-component formControlName="baseCurrency"></app-currency-selection-component>
-  <br>
-  <br>
-  <button (click)="switchCurrencies()">Switch</button>
-  <br>
-  To
-  <app-currency-selection-component formControlName="counterCurrency"></app-currency-selection-component>
-  <br>
-  <br>
-</form>
-<div *ngIf="(convertedCurrency$ | async) as convertedCurrency">
-  <div> 1 {{convertedCurrency.query.from}} = {{convertedCurrency.info.rate}} {{convertedCurrency.query.to}}</div>
-  <br>
-  <div>{{convertedCurrency.query.amount}} {{convertedCurrency.query.from}}</div>
-  <div>=</div>
-  <div>{{convertedCurrency.result}} {{convertedCurrency.query.to}}</div>
-  <br>
-  <div>{{convertedCurrency.date}}</div>
+<div class="main-wrapper">
+  <form [formGroup]="currencyConvertForm">
+
+    <div class="form-control-wrapper">
+      <div class="label">Amount</div>
+      <input class="form-control" formControlName="amount">
+    </div>
+
+    <div class="currency-selector">
+      <div class="form-control-wrapper">
+        <div class="label">From</div>
+        <app-currency-selection-component formControlName="baseCurrency"></app-currency-selection-component>
+      </div>
+
+      <div class="switch" (click)="switchCurrencies()">
+        <i class="pi pi-sort-alt"></i>
+      </div>
+
+      <div class="form-control-wrapper">
+        <div class="label">To</div>
+        <app-currency-selection-component formControlName="counterCurrency"></app-currency-selection-component>
+      </div>
+    </div>
+  </form>
+
+  <div class="currency-calculation">
+    <ng-container *ngIf="(convertedCurrency$ | async) as convertedCurrency">
+      <div class="divider">
+        <div class="rounded"></div>
+        <div class="one-unit-calculation">
+          1 {{convertedCurrency.query.from}} = {{convertedCurrency.info.rate}} {{convertedCurrency.query.to}}
+        </div>
+        <div class="rounded"></div>
+      </div>
+
+      <div class="amount-calculation">
+        <div>{{convertedCurrency.query.amount}} {{convertedCurrency.query.from}}</div>
+        <div>=</div>
+        <div class="result">{{convertedCurrency.result}} {{convertedCurrency.query.to}}</div>
+      </div>
+
+      <div class="divider">
+        <div class="rounded"></div>
+        <div class="one-unit-calculation">
+          {{convertedCurrency.date}}
+        </div>
+        <div class="rounded"></div>
+      </div>
+    </ng-container>
+  </div>
+
+  <highcharts-chart
+    [Highcharts]="Highcharts"
+    [options]="chartOptions"
+    [(update)]="updateFlag"
+    style="width: 100%; height: 400px; display: block; margin-right: 10px"
+  ></highcharts-chart>
 </div>
-
-<highcharts-chart
-  [Highcharts]="Highcharts"
-  [options]="chartOptions"
-  [(update)]="updateFlag"
-  style="width: 100%; height: 400px; display: block;"
-></highcharts-chart>
-
-<!--<i class="pi pi-check"></i>-->

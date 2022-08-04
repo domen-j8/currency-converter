@@ -1,1 +1,121 @@
+.main-wrapper {
+  padding: 10px;
+}
 
+form {
+  width: 100%;
+}
+
+.form-control-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px 0 20px;
+  margin-bottom: 25px;
+}
+
+
+.label {
+  color: var(--secondary-color);
+  margin-bottom: 5px;
+}
+
+input.form-control  {
+  height: 40px;
+  border-radius: 25px;
+  padding: 0 10px;
+  font-weight: bold;
+  font-size: 18px;
+  border: 2px solid var(--secondary-color);
+}
+
+input:focus {
+  border-color: var(--primary-color);
+  outline: none !important;
+  color: var(--primary-color);
+}
+
+.currency-selector {
+  display: flex;
+  justify-content: space-between;
+  flex-grow: 1;
+  align-items: center;
+}
+
+.switch {
+  background-image: linear-gradient(
+    50deg,
+    hsl(292deg 100% 40%) 0%,
+    hsl(301deg 100% 36%) 14%,
+    hsl(309deg 100% 37%) 33%,
+    hsl(315deg 100% 38%) 51%,
+    hsl(321deg 100% 38%) 66%,
+    hsl(325deg 100% 37%) 77%,
+    hsl(330deg 100% 37%) 86%,
+    hsl(333deg 100% 35%) 92%,
+    hsl(336deg 100% 34%) 97%,
+    hsl(340deg 95% 33%) 100%
+  );
+  height: 45px;
+  width: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 23px;
+  color: #fff;
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+.currency-calculation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--secondary-color);
+}
+
+.divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-shrink: 1;
+}
+
+.one-unit-calculation  {
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+.rounded {
+  border-top: 1px solid #bbb;
+  width: 100%;
+  margin: 0 30px;
+}
+
+.amount-calculation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px 0 30px 0;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.result {
+  font-size: 30px;
+  background-image: -webkit-linear-gradient(
+    50deg,
+    hsl(292deg 100% 40%) 0%,
+    hsl(301deg 100% 36%) 14%,
+    hsl(309deg 100% 37%) 33%,
+    hsl(315deg 100% 38%) 51%,
+    hsl(321deg 100% 38%) 66%,
+    hsl(325deg 100% 37%) 77%,
+    hsl(330deg 100% 37%) 86%,
+    hsl(333deg 100% 35%) 92%,
+    hsl(336deg 100% 34%) 97%,
+    hsl(340deg 95% 33%) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
