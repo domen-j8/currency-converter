@@ -17,8 +17,15 @@ export class CurrencyService {
       );
   }
 
-  currencyConvert(): Observable<any> {
-    return this.http.get('https://api.exchangerate.host/convert?from=USD&to=EUR')
+  currencyConvert(amount: any, baseCurrency: any, counterCurrency: any): Observable<any> {
+    return this.http.get(`https://api.exchangerate.host/convert?from=${baseCurrency}&to=${counterCurrency}&amount=${amount}`)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  timeSeries(baseCurrency: any, counterCurrency: any): Observable<any> {
+    return this.http.get(`https://api.exchangerate.host/timeseries?start_date=2022-01-01&end_date=2022-08-04&base=${baseCurrency}&symbols=${counterCurrency}`)
       .pipe(
         catchError(this.handleError)
       );
