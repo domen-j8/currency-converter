@@ -24,25 +24,28 @@
   </form>
 
   <div class="currency-calculation">
-    <ng-container *ngIf="(convertedCurrency$ | async) as convertedCurrency">
+    <ng-container *ngIf="{o1: convertedCurrency$ | async} as convertedCurrency">
       <div class="divider">
         <div class="rounded"></div>
         <div class="one-unit-calculation">
-          1 {{convertedCurrency.query.from}} = {{convertedCurrency.info.rate}} {{convertedCurrency.query.to}}
+          1 {{convertedCurrency.o1?.query.from}} = {{convertedCurrency.o1?.info.rate}}
+          {{convertedCurrency.o1?.query.to}}
         </div>
         <div class="rounded"></div>
       </div>
 
       <div class="amount-calculation">
-        <div>{{convertedCurrency.query.amount}} {{convertedCurrency.query.from}}</div>
+        <div>{{convertedCurrency.o1?.query.amount}} {{convertedCurrency.o1?.query.from}}</div>
         <div>=</div>
-        <div class="result">{{convertedCurrency.result}} {{convertedCurrency.query.to}}</div>
+        <div class="result">{{convertedCurrency.o1?.result | number : '1.2-2'}}
+          {{convertedCurrency.o1?.query.to}}
+        </div>
       </div>
 
       <div class="divider">
         <div class="rounded"></div>
         <div class="one-unit-calculation">
-          {{convertedCurrency.date}}
+          {{convertedCurrency.o1?.date}}
         </div>
         <div class="rounded"></div>
       </div>
