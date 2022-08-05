@@ -1,7 +1,7 @@
 <div class="currency-select-wrapper">
   <div [ngClass]="{'open-currency-dropdown': showCurrencies}" class="input-wrapper" (click)="showDropDown($event)">
     <input class="currency-input" (input)="onInputChange($event)"
-           [(ngModel)]="selectedCurrency"/>
+           [(ngModel)]="selectedCurrency" maxlength="3"/>
     <i *ngIf="showCurrencies; else hiddenCurrencies" class="pi pi-angle-up"></i>
     <ng-template #hiddenCurrencies>
       <i class="pi pi-angle-down"></i>
@@ -10,7 +10,7 @@
 
   <div [hidden]="!showCurrencies" class="currencies">
     <ng-container *ngFor="let currency of results$ | async">
-      <div (click)="selectCurrency(currency, $event)">{{currency[1].code}}</div>
+      <div (click)="selectCurrency(currency)">{{currency[1].code}}</div>
     </ng-container>
   </div>
 </div>

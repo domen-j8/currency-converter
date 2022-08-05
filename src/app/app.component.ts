@@ -1,7 +1,7 @@
-import {Component, NgModule, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder} from "@angular/forms";
 import {CurrencyService} from "./currency-service/currency.service";
-import {merge, Observable, pairwise, startWith} from "rxjs";
+import {Observable, pairwise, startWith} from "rxjs";
 import * as Highcharts from 'highcharts';
 
 @Component({

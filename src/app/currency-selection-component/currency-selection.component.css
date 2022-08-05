@@ -36,7 +36,7 @@
   border: 1px solid black;
   flex: 1 1 auto;
   overflow-y: scroll;
-  height: 250px;
+  max-height: 250px;
   width: 100px;
   background: white;
   position: absolute;

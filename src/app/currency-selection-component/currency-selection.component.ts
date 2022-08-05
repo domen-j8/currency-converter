@@ -1,6 +1,6 @@
 import {Component, HostListener, OnInit} from '@angular/core';
 import {CurrencyService} from "../currency-service/currency.service";
-import {BehaviorSubject, debounceTime, map, Observable, skip, switchMap, takeUntil} from "rxjs";
+import {BehaviorSubject, map, Observable, of, switchMap} from "rxjs";
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -29,13 +29,12 @@ import {
 })
 export class CurrencySelectionComponent implements OnInit, ControlValueAccessor, Validator {
 
+  symbols$ = new Observable<any>();
   term$ = new BehaviorSubject<string>('');
   results$: Observable<any> = this.term$.pipe(
-    debounceTime(1000),
     switchMap(term =>
-      this.currencyService.getSymbols().pipe(
-        map(currency => Object.entries(currency).filter((item: any) => item[1].code.includes(term.toUpperCase()))),
-        takeUntil(this.term$.pipe(skip(1)))
+      this.symbols$.pipe(
+        map(currency => Object.entries(currency).filter((item: any) => item[1].code.startsWith(term.toUpperCase()))),
       )
     )
   )
@@ -43,10 +42,15 @@ export class CurrencySelectionComponent implements OnInit, ControlValueAccessor,
   showCurrencies: boolean = false;
   currencies: any;
   selectedCurrency: string = '';
+  previousSelectedCurrency = '';
   onChange = (selectedCurrency: any) => {debugger};
   onTouched = () => {debugger};
 
   @HostListener('document:click', ['$event']) onDocumentClick() {
+    if (this.showCurrencies) {
+      // If new currency is not selected show previous one.
+      this.selectedCurrency = this.previousSelectedCurrency;
+    }
     this.showCurrencies = false;
   }
 
@@ -54,17 +58,22 @@ export class CurrencySelectionComponent implements OnInit, ControlValueAccessor,
   }
 
   ngOnInit(): void {
+    this.currencyService.getSymbols()
+      .subscribe((res) => {
+        this.symbols$ = of(res);
+    })
   }
 
   showDropDown(event: any) {
+    this.previousSelectedCurrency = this.selectedCurrency;
+    this.term$.next('')
     this.showCurrencies = true;
     event.stopPropagation()
   }
 
-  selectCurrency(currency: any, event: any) {
+  selectCurrency(currency: any) {
     this.selectedCurrency = currency[1].code;
     this.showCurrencies = false;
-    this.term$.next(this.selectedCurrency)
     this.onChange(this.selectedCurrency);
   }
 
