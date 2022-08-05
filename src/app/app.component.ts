@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder} from "@angular/forms";
+import {FormBuilder, Validators} from "@angular/forms";
 import {CurrencyService} from "./currency-service/currency.service";
 import {Observable, pairwise, startWith} from "rxjs";
 import * as Highcharts from 'highcharts';
@@ -47,32 +47,38 @@ export class AppComponent implements OnInit {
 
   currencyConvertForm = this.fb.group({
     amount: [1],
-    baseCurrency: ['EUR'],
-    counterCurrency: ['USD']
+    baseCurrency: ['EUR', Validators.required],
+    counterCurrency: ['USD', Validators.required]
   })
 
-  convertedCurrency$: Observable<any> = this.currencyService.currencyConvert(
-    this.currencyConvertForm.get('amount')?.value,
-    this.currencyConvertForm.get('baseCurrency')?.value,
-    this.currencyConvertForm.get('counterCurrency')?.value
-  );
+  convertedCurrency$: Observable<any> = new Observable<any>();
 
   constructor(private fb: FormBuilder, private currencyService: CurrencyService) {
   }
 
   ngOnInit(): void {
-    this.drawGraphLine(this.currencyConvertForm.get('baseCurrency')?.value,
-      this.currencyConvertForm.get('counterCurrency')?.value);
+    if (this.currencyConvertForm.valid) {
+      this.convertedCurrency$ = this.currencyService.currencyConvert(
+        this.currencyConvertForm.get('amount')?.value,
+        this.currencyConvertForm.get('baseCurrency')?.value,
+        this.currencyConvertForm.get('counterCurrency')?.value
+      );
+
+      this.drawGraphLine(this.currencyConvertForm.get('baseCurrency')?.value,
+        this.currencyConvertForm.get('counterCurrency')?.value);
+    }
 
     this.currencyConvertForm.valueChanges.pipe(
       startWith(null),
       pairwise()
     ).subscribe(([prev, next]: [any, any]) => {
-      this.convertedCurrency$ = this.currencyService.currencyConvert(
-        next.amount, next.baseCurrency, next.counterCurrency);
-      if (prev === null || prev.baseCurrency != next.baseCurrency || prev.counterCurrency != next.counterCurrency) {
-        this.drawGraphLine(this.currencyConvertForm.get('baseCurrency')?.value,
-          this.currencyConvertForm.get('counterCurrency')?.value);
+      if (this.currencyConvertForm.valid) {
+        this.convertedCurrency$ = this.currencyService.currencyConvert(
+          next.amount, next.baseCurrency, next.counterCurrency);
+        if (prev === null || prev.baseCurrency != next.baseCurrency || prev.counterCurrency != next.counterCurrency) {
+          this.drawGraphLine(this.currencyConvertForm.get('baseCurrency')?.value,
+            this.currencyConvertForm.get('counterCurrency')?.value);
+        }
       }
     })
   }
