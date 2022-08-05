@@ -29,17 +29,17 @@
       <div class="divider">
         <div class="rounded"></div>
         <div class="one-unit-calculation">
-          1 {{convertedCurrency.o1?.query.from}} = {{convertedCurrency.o1?.info.rate}}
-          {{convertedCurrency.o1?.query.to}}
+          1 {{convertedCurrency.o1?.query?.from}} = {{convertedCurrency.o1?.info?.rate}}
+          {{convertedCurrency.o1?.query?.to}}
         </div>
         <div class="rounded"></div>
       </div>
 
       <div class="amount-calculation">
-        <div>{{convertedCurrency.o1?.query.amount}} {{convertedCurrency.o1?.query.from}}</div>
+        <div>{{convertedCurrency.o1?.query?.amount}} {{convertedCurrency.o1?.query?.from}}</div>
         <div>=</div>
         <div class="result">{{convertedCurrency.o1?.result | number : '1.2-2'}}
-          {{convertedCurrency.o1?.query.to}}
+          {{convertedCurrency.o1?.query?.to}}
         </div>
       </div>
 
