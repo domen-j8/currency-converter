@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {catchError, concatMap, map, Observable, of} from "rxjs";
+import {catchError, map, Observable, throwError} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +32,7 @@ export class CurrencyService {
   }
 
   handleError(error: HttpErrorResponse) {
-    return '';
+    return throwError(() => new Error('Something bad happened; please try again later.'));
   }
 
 }
