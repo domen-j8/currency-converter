@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {catchError, map, Observable, throwError} from "rxjs";
+import {CurrencySymbolsResponse} from "../interfaces/currency-symbols-response";
+import {CurrencySymbols} from "../interfaces/currency-symbols";
 
 @Injectable({
   providedIn: 'root'
@@ -9,10 +11,10 @@ export class CurrencyService {
 
   constructor(private http: HttpClient) { }
 
-  getSymbols(): Observable<any> {
-    return this.http.get('https://api.exchangerate.host/symbols')
+  getSymbols(): Observable<CurrencySymbols> {
+    return this.http.get<CurrencySymbolsResponse>('https://api.exchangerate.host/symbols')
       .pipe(
-        map((r:any) => r.symbols),
+        map((r: CurrencySymbolsResponse) => r.symbols),
         catchError(this.handleError)
       );
   }

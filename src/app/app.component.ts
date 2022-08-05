@@ -32,7 +32,7 @@ export class AppComponent implements OnInit {
     },
     xAxis: {
       gridLineWidth: 1,
-      categories: ['1.1.2022', '1.2.2022', '1.3.2022', '1.4.2022']
+      categories: []
     },
     tooltip: {
       enabled: false
@@ -67,7 +67,10 @@ export class AppComponent implements OnInit {
       this.drawGraphLine(this.currencyConvertForm.get('baseCurrency')?.value,
         this.currencyConvertForm.get('counterCurrency')?.value);
     }
+    this.subscribeToFormChanges();
+  }
 
+  subscribeToFormChanges() {
     this.currencyConvertForm.valueChanges.pipe(
       startWith(null),
       pairwise()
@@ -83,6 +86,9 @@ export class AppComponent implements OnInit {
     })
   }
 
+  /**
+   * It swaps current two currencies for which conversion is done.
+   */
   switchCurrencies() {
     let oldBaseCurrency = this.currencyConvertForm.get('baseCurrency')?.value;
     let oldCounterCurrency = this.currencyConvertForm.get('counterCurrency')?.value;
@@ -92,6 +98,12 @@ export class AppComponent implements OnInit {
     })
   }
 
+  /**
+   *  It draws daily historical rates between two currencies for current year.
+   *
+   * @param baseCurrency
+   * @param counterCurrency
+   */
   drawGraphLine(baseCurrency: any, counterCurrency: any) {
     let today = new Date().toISOString().slice(0, 10)
     let startDate = `${new Date().getFullYear()}-01-01`

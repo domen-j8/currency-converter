@@ -1,5 +1,4 @@
 import {Component, HostListener, OnInit} from '@angular/core';
-import {CurrencyService} from "../currency-service/currency.service";
 import {BehaviorSubject, map, Observable, of, switchMap} from "rxjs";
 import {
   AbstractControl,
@@ -9,6 +8,8 @@ import {
   ValidationErrors,
   Validator
 } from "@angular/forms";
+import {CurrencySymbols} from "../interfaces/currency-symbols";
+import {CurrencyService} from "../currency-service/currency.service";
 
 @Component({
   selector: 'app-currency-selection-component',
@@ -29,8 +30,17 @@ import {
 })
 export class CurrencySelectionComponent implements OnInit, ControlValueAccessor, Validator {
 
-  symbols$ = new Observable<any>();
+  /**
+   * Symbols for all currencies retrieved from endpoint.
+   */
+  symbols$ = new Observable<CurrencySymbols>();
+  /**
+   * Search term.
+   */
   term$ = new BehaviorSubject<string>('');
+  /**
+   * Currencies visible in dropdown. They are getting filtered while typing.
+   */
   results$: Observable<any> = this.term$.pipe(
     switchMap(term =>
       this.symbols$.pipe(
@@ -39,10 +49,18 @@ export class CurrencySelectionComponent implements OnInit, ControlValueAccessor,
     )
   )
 
+  /**
+   * Currencies gets visible in dropdown.
+   */
   showCurrencies: boolean = false;
-  currencies: any;
+  /**
+   * Currently selected currency by user.
+   */
   selectedCurrency: string = '';
-  previousSelectedCurrency = '';
+  /**
+   * When user search for currency but not select one, it gets set to previously selected one.
+   */
+  previousSelectedCurrency: string = '';
   onChange = (selectedCurrency: any) => {debugger};
   onTouched = () => {debugger};
 
@@ -59,7 +77,7 @@ export class CurrencySelectionComponent implements OnInit, ControlValueAccessor,
 
   ngOnInit(): void {
     this.currencyService.getSymbols()
-      .subscribe((res) => {
+      .subscribe((res: CurrencySymbols) => {
         this.symbols$ = of(res);
     })
   }
