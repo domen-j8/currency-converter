@@ -3,6 +3,7 @@ import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {catchError, map, Observable, throwError} from "rxjs";
 import {CurrencySymbolsResponse} from "../interfaces/currency-symbols-response";
 import {CurrencySymbols} from "../interfaces/currency-symbols";
+import {CurrencyConvertResponse} from "../interfaces/currency-convert-response";
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +20,8 @@ export class CurrencyService {
       );
   }
 
-  currencyConvert(amount: any, baseCurrency: any, counterCurrency: any): Observable<any> {
-    return this.http.get(`https://api.exchangerate.host/convert?from=${baseCurrency}&to=${counterCurrency}&amount=${amount}`)
+  currencyConvert(amount: any, baseCurrency: any, counterCurrency: any): Observable<CurrencyConvertResponse> {
+    return this.http.get<CurrencyConvertResponse>(`https://api.exchangerate.host/convert?from=${baseCurrency}&to=${counterCurrency}&amount=${amount}`)
       .pipe(
         catchError(this.handleError)
       );

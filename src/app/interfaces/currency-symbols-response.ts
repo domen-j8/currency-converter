@@ -1,8 +1,7 @@
 import {CurrencySymbols} from "./currency-symbols";
+import {ExchangeRateResponse} from "./exchange-rate-response";
 
 
-export interface CurrencySymbolsResponse {
-  motd: {msg: string; url: string};
-  success: boolean;
+export interface CurrencySymbolsResponse extends ExchangeRateResponse {
   symbols: CurrencySymbols;
 }

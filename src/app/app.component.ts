@@ -3,6 +3,7 @@ import {FormBuilder, Validators} from "@angular/forms";
 import {CurrencyService} from "./currency-service/currency.service";
 import {Observable, pairwise, startWith} from "rxjs";
 import * as Highcharts from 'highcharts';
+import {CurrencyConvertResponse} from "./interfaces/currency-convert-response";
 
 @Component({
   selector: 'app-root',
@@ -51,7 +52,10 @@ export class AppComponent implements OnInit {
     counterCurrency: ['USD', Validators.required]
   })
 
-  convertedCurrency$: Observable<any> = new Observable<any>();
+  /**
+   * Contains converted amount and info about conversion
+   */
+  convertedCurrency$: Observable<CurrencyConvertResponse> = new Observable<CurrencyConvertResponse>();
 
   constructor(private fb: FormBuilder, private currencyService: CurrencyService) {
   }
